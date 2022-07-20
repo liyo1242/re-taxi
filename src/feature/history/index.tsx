@@ -1,5 +1,5 @@
-import React from "react";
+import React from 'react'
 
 export default function History() {
-  return <div>History Component</div>;
+  return <div>History Component</div>
 }

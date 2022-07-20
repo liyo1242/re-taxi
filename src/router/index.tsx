@@ -1,9 +1,9 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Layout from "../layout";
-import Form from "../feature/form";
-import Status from "../feature/status";
-import History from "../feature/history";
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Layout from '../layout'
+import Form from '../feature/form'
+import Status from '../feature/status'
+import History from '../feature/history'
 
 export default function RouterView() {
   return (
@@ -14,7 +14,7 @@ export default function RouterView() {
         <Route
           path="*"
           element={
-            <main style={{ padding: "1rem" }}>
+            <main style={{ padding: '1rem' }}>
               <p>There is nothing here!</p>
             </main>
           }
@@ -22,5 +22,5 @@ export default function RouterView() {
       </Route>
       <Route path="/status" element={<Status />} />
     </Routes>
-  );
+  )
 }

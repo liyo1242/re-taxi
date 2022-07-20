@@ -1,3 +1,3 @@
 export default function geoMap() {
-  return <div id="map" />;
+  return <div id="map" />
 }

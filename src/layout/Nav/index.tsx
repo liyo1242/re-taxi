@@ -1,15 +1,15 @@
-import React from "react";
-import classes from "./nav.module.css";
+import React from 'react'
+import classes from './nav.module.css'
 
-import { useAppDispatch } from "../../store";
-import { toggleSideBar } from "../../store/layout";
+import { useAppDispatch } from '../../store'
+import { toggleSideBar } from '../../store/layout'
 
 export default function Nav() {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   const handleClickMenu = () => {
-    dispatch(toggleSideBar());
-  };
+    dispatch(toggleSideBar())
+  }
 
   return (
     <div className={classes.nav} onClick={handleClickMenu}>
@@ -17,5 +17,5 @@ export default function Nav() {
         <span />
       </div>
     </div>
-  );
+  )
 }

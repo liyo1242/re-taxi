@@ -8,5 +8,5 @@ export default function geoResult() {
         <li>Result 4</li>
       </ul>
     </div>
-  );
+  )
 }

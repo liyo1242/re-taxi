@@ -16,7 +16,9 @@
   align-items: center;
 }
 
-.menu > span, .menu > span::after, .menu > span::before {
+.menu > span,
+.menu > span::after,
+.menu > span::before {
   width: 20px;
   height: 2px;
   background-color: var(--color-primary);
@@ -27,14 +29,13 @@
 }
 
 .menu > span::after {
-  content: '';
+  content: "";
   position: absolute;
-  top: -5px
+  top: -5px;
 }
 
 .menu > span::before {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: -5px
+  bottom: -5px;
 }
-

@@ -3,7 +3,7 @@
   height: calc(100vh - var(--nav-height));
   width: 40vw;
   background-color: var(--color-system-light-2);
-  transform: translateX(-40vw)
+  transform: translateX(-40vw);
 }
 
 .sideBar.active {
@@ -12,5 +12,4 @@
 
 .sideBar > ul {
   position: relative;
-
 }

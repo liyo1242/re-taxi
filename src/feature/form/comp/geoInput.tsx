@@ -1,7 +1,7 @@
 export function geoOriginPlaceInput() {
-  return <input />;
+  return <input />
 }
 
 export function geoDestinationPlaceInput() {
-  return <input />;
+  return <input />
 }

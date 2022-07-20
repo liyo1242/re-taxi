@@ -1,23 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 
 interface LayoutState {
-  isSideBarOpen: boolean;
+  isSideBarOpen: boolean
 }
 
 const initialState: LayoutState = {
   isSideBarOpen: false,
-};
+}
 
 export const layoutSlice = createSlice({
-  name: "layout",
+  name: 'layout',
   initialState,
   reducers: {
     toggleSideBar: (state) => {
-      state.isSideBarOpen = !state.isSideBarOpen;
+      state.isSideBarOpen = !state.isSideBarOpen
     },
   },
-});
+})
 
-export const { toggleSideBar } = layoutSlice.actions;
+export const { toggleSideBar } = layoutSlice.actions
 
-export default layoutSlice.reducer;
+export default layoutSlice.reducer
