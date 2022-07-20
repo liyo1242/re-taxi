@@ -1,0 +1,40 @@
+.nav {
+  position: relative;
+  width: 100%;
+  height: var(--nav-height);
+  display: flex;
+  box-shadow: 0px 0px 5px var(--color-system-dark-2);
+}
+
+.menu {
+  position: relative;
+  width: var(--nav-height);
+  height: var(--nav-height);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu > span, .menu > span::after, .menu > span::before {
+  width: 20px;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+.menu > span {
+  position: relative;
+}
+
+.menu > span::after {
+  content: '';
+  position: absolute;
+  top: -5px
+}
+
+.menu > span::before {
+  content: '';
+  position: absolute;
+  bottom: -5px
+}
+

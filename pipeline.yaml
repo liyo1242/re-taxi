@@ -1,0 +1,94 @@
+pool:
+  name: Azure Pipelines
+#Your build pipeline references an undefined variable named ‘PullRequestTag’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references an undefined variable named ‘echo $source | cut -d \/ -f 3 ’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references the ‘KnstVersion’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references an undefined variable named ‘BUILD_ENV’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+variables:
+  npm_config_cache: '$(Pipeline.Workspace)/.npm'
+
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 14.x'
+  inputs:
+    versionSpec: 14.x
+
+- task: Cache@2
+  displayName: 'Cache npm Global Temp'
+  inputs:
+    key: 'version3 | npm | "$(Agent.OS)" | package-lock.json'
+    path: '$(npm_config_cache)'
+
+- task: Cache@2
+  displayName: 'Cache node_module'
+  inputs:
+    key: 'version3 | npm | "$(Agent.OS)" | package-lock.json'
+    path: 'node_modules'
+    cacheHitVar: isCacheModule
+
+- bash: |
+   echo $(PullRequestTag)
+   echo $(Build.SourceBranch)
+   echo $(System.PullRequest.TargetBranch)
+   if [[ ! -z $(System.PullRequest.TargetBranch) ]];
+   then source=$(System.PullRequest.TargetBranch);
+   else source=$(Build.SourceBranch);
+   fi
+   echo $source
+   env="$(echo $source | cut -d \/ -f 3 )"
+   if [[ $env != master && $env != staging && $env != develop ]];
+   then env=dev;
+   elif [ $env = master ]; then env=prod;
+   elif [ $env = staging ]; then env=staging;
+   elif [ $env = develop ]; then env=dev;
+   fi
+   if [[ ! -z ${MANUAL_ENV} ]]; then env=${MANUAL_ENV};
+   fi
+   echo $env
+   echo "##vso[task.setvariable variable=BUILD_ENV;]$env"
+  displayName: 'Use Source Branch As Env'
+
+- script: 'echo "REACT_APP_VERSION=$(Build.BuildNumber)" >> .env'
+  displayName: 'Add BuildNumber Version'
+
+- script: 'npm ci'
+  displayName: 'npm install'
+  condition: and(succeeded(), eq(variables.isCacheModule, 'false'))
+
+- script: 'npm install react-scripts@3.4.1 -g'
+  displayName: 'npm install react-scripts@3.4.1'
+
+- script: 'npm run build:$(BUILD_ENV)'
+  displayName: 'npm build'
+
+- script: |
+   echo '
+   FROM nginx:stable-alpine as final
+   COPY ./build/ /usr/share/nginx/html
+   RUN nginx -V; nginx -T;
+   EXPOSE 80
+   CMD ["nginx","-g","daemon off;"]
+   ' > CIDockerfile
+  displayName: 'Create CI DockerFile'
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'),eq(variables['Agent.JobStatus'], 'Succeeded'))
+
+- task: Docker@0
+  displayName: 'docker build'
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryConnection: '$(DockerRegistryConnection)'
+    dockerFile: '**/CIDockerfile'
+    addBaseImageData: false
+    imageName: '$(DockerImageName):$(Build.BuildId)'
+    includeLatestTag: true
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'),eq(variables['Agent.JobStatus'], 'Succeeded'))
+
+- task: Docker@0
+  displayName: 'docker push'
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryConnection: '$(DockerRegistryConnection)'
+    action: 'Push an image'
+    imageName: '$(DockerImageName):$(Build.BuildId)'
+    includeLatestTag: true
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'),eq(variables['Agent.JobStatus'], 'Succeeded'))

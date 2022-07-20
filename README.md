@@ -1,70 +1,97 @@
-# Getting Started with Create React App
+<div id="top"></div>
+<div align="center">
+  <div align="center" style="width: 50px">
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![docs-logo.png](.asset/docs-logo.png)
 
-## Available Scripts
+  </div>
+  <h3 align="center">Re-Taxi</h3>
 
-In the project directory, you can run:
+  <p align="center">
+    This is a refactoring project from my last work project
+    <br />
+    <br />
+  </p>
+</div>
 
-### `npm start`
+<details open="open">
+<summary> 🗻 Table of Contents</summary>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [About This Project](#about-this-project)
+  - [Prerequisites](#prerequisites)
+- [Useful Links](#useful-links)
+- [My Strategy](#my-strategy)
+- [Usage](#usage)
+- [Project structure](#project-structure)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+</details>
 
-### `npm test`
+## About This Project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This project includes 1 main part, optimize API efficiency when relying on **google map API** to select addresses
+The main reason for refactoring this project is to bring to a close what I did not do before.
 
-### `npm run build`
+### Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project start from **TypeScript** and **React**, and has some base lint rule (eslint and commitlint), so the development may need to pay attention to
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Useful Links
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+React Router 6
+https://reactrouter.com/docs/en/v6/getting-started/tutorial
 
-### `npm run eject`
+RTKQ
+https://redux-toolkit.js.org/rtk-query/overview
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## My Strategy
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+In my previous work experience, I learned that the most traffic-consuming points were predictive queries and map selection
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- I expect to use RTKQ and IndexDB for optimizing the **prediction queries** part.
+- The **map selection** part will use a slow trigger strategy
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Other areas that could be optimized are the user experience of selecting addresses
 
-## Learn More
+## Usage
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+After you have cloned, there are a few things you must do
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Install the dependencies
 
-### Code Splitting
+```bash
+yarn
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Start this project
 
-### Analyzing the Bundle Size
+```bash
+yarn run start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- If you just want to see the UI, you can find him through **storybook** (not yet 😂)
 
-### Making a Progressive Web App
+```bash
+yarn run storybook
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Project structure
 
-### Advanced Configuration
+My folder structure is separated by feature, as the project is still small, so I want to avoid over-design.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```shell
+Project
+├─ .asset                                   #  docs asset
+├─ .husky                                   #  husky config folder (lint check before commit)
+├─ .vscode                                  #  vscode config folder (extension convenience)
+├─ public
+│  ├─ mainifest.json                        #  I will add PWA feature after refactor
+│  └─ index.html
+├─ src
+│  ├─ feature                               #  core Logic Components
+│  ├─ layout                                #  UI that is not part of the main program
+│  ├─ router                                #  the act of splitting the router
+│  ├─ store                                 #  RTK slice
+│  ├─ stories                               #  storybook component stories (not yet 😂)
+│  └─ ...
+└─ ...
+```

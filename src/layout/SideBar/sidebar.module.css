@@ -1,0 +1,16 @@
+.sideBar {
+  position: absolute;
+  height: calc(100vh - var(--nav-height));
+  width: 40vw;
+  background-color: var(--color-system-light-2);
+  transform: translateX(-40vw)
+}
+
+.sideBar.active {
+  transform: translateX(0);
+}
+
+.sideBar > ul {
+  position: relative;
+
+}
