@@ -4,12 +4,18 @@ import type { TypedUseSelectorHook } from 'react-redux'
 
 import addressReducer from './address'
 import layoutReducer from './layout'
+import googleReducer from './google'
 
 export const store = configureStore({
   reducer: {
     address: addressReducer,
     layout: layoutReducer,
+    google: googleReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })
 
 export type RootState = ReturnType<typeof store.getState>

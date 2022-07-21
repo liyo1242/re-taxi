@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 interface AddressState {
+  gpsPlaceLat: number
+  gpsPlaceLon: number
   originPlace: string
   originPlaceFullText: string
   originPlaceLat: number
@@ -23,6 +25,8 @@ interface SetGeoAction {
 }
 
 const initialState: AddressState = {
+  gpsPlaceLat: 0,
+  gpsPlaceLon: 0,
   originPlace: '',
   originPlaceFullText: '',
   originPlaceLat: 0,
