@@ -14,6 +14,7 @@ export function useScript(src: string) {
         loaded: true,
         error: false,
       })
+      return () => undefined
     } else {
       cachedScripts.push(src)
       // Create script

@@ -35,7 +35,7 @@ export const fetchPredictResultByWord = createAsyncThunk<
   const response = await new Promise((resolve) =>
     service.getPlacePredictions(option, (data) => resolve(data))
   )
-  return response
+  return response as Array<GoogleMapPlaceModel>
 })
 
 export const googleSlice = createSlice({
