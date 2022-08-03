@@ -11,7 +11,7 @@ interface GoogleMapPlaceModel {
 interface GoogleMapState {
   googleGeocoderService: any
   googleAutocompleteService: any
-  googlePredictResult: Array<GoogleMapPlaceModel>
+  googlePredictResult: PredictResultModel
 }
 
 const initialState: GoogleMapState = {
@@ -20,8 +20,17 @@ const initialState: GoogleMapState = {
   googlePredictResult: [],
 }
 
+type PredictResultModel = ReturnType<typeof predictResultFormat>
+
+const predictResultFormat = (results: Array<GoogleMapPlaceModel>) =>
+  results.map((result) => ({
+    full: result.description,
+    short: result.structured_formatting.main_text,
+    id: result.place_id,
+  }))
+
 export const fetchPredictResultByWord = createAsyncThunk<
-  Array<GoogleMapPlaceModel>,
+  PredictResultModel,
   string,
   { state: { google: { googleAutocompleteService: any } } }
 >('users/fetchPredictResultByWord', async (word: string, { getState }) => {
@@ -32,10 +41,10 @@ export const fetchPredictResultByWord = createAsyncThunk<
     input: word,
     type: 'establishment',
   }
-  const response = await new Promise((resolve) =>
+  const response = await new Promise<Array<GoogleMapPlaceModel>>((resolve) => {
     service.getPlacePredictions(option, (data) => resolve(data))
-  )
-  return response as Array<GoogleMapPlaceModel>
+  })
+  return predictResultFormat(response)
 })
 
 export const googleSlice = createSlice({
@@ -48,6 +57,9 @@ export const googleSlice = createSlice({
     setGoogleGeocoderService: (state, action) => {
       state.googleGeocoderService = action.payload
     },
+    setGooglePredictResult: (state, action) => {
+      state.googlePredictResult = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPredictResultByWord.fulfilled, (state, action) => {
@@ -56,6 +68,7 @@ export const googleSlice = createSlice({
   },
 })
 
-export const { setGoogleAutocompleteService, setGoogleGeocoderService } = googleSlice.actions
+export const { setGoogleAutocompleteService, setGoogleGeocoderService, setGooglePredictResult } =
+  googleSlice.actions
 
 export default googleSlice.reducer
