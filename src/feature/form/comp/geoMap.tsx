@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import classes from './geoMap.module.css'
 import mapStyle from '../../../style/map.json'
+import FlagIcon from './flag'
 
 import { useAppSelector } from '../../../store'
 
@@ -15,6 +16,7 @@ interface MapInstance {
 export default function GeoMap(props: GeoMapProps) {
   const [isLoad, setIsLoad] = useState(false)
   const [map, setMap] = useState<MapInstance | null>(null)
+  const [isDrag, setIsDrag] = useState(false)
 
   const originPlaceLat = useAppSelector((state) => state.address.originPlaceLat)
   const originPlaceLon = useAppSelector((state) => state.address.originPlaceLon)
@@ -38,7 +40,14 @@ export default function GeoMap(props: GeoMapProps) {
       option.center = { lat: destinationPlaceLat, lng: destinationPlaceLon }
     }
 
-    setMap(new window.google.maps.Map(document.getElementById('map'), option))
+    const mapInstance = new window.google.maps.Map(document.getElementById('map'), option)
+    setMap(mapInstance)
+    mapInstance.addListener('drag', () => {
+      setIsDrag(true)
+    })
+    mapInstance.addListener('dragend', () => {
+      setIsDrag(false)
+    })
     setIsLoad(true)
   }
 
@@ -64,6 +73,7 @@ export default function GeoMap(props: GeoMapProps) {
   return (
     <div className={`${classes.container} ${props.status ? '' : classes.hide}`}>
       <div id="map" style={{ width: '100%', height: '100%' }} />
+      <FlagIcon active={isDrag} />
     </div>
   )
 }

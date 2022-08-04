@@ -8,6 +8,7 @@ import { setGpsTrace } from '../../store/address'
 import GepInput from './comp/geoInput'
 import GeoMap from './comp/geoMap'
 import GeoResult from './comp/geoResult'
+import GeoForm from './comp/geoForm'
 
 import classes from './index.module.css'
 
@@ -17,8 +18,9 @@ export default function Form() {
     `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_KEY}&libraries=places&callback=initMap`
   )
 
-  const [isPredictShow, setIsPredictShow] = useState(true)
+  const [isPredictShow, setIsPredictShow] = useState(false)
   const [isMapShow, setIsMapShow] = useState(false)
+  const [isFormShow, setIsFormShow] = useState(true)
 
   const handleChoosePlaceFromMap = () => {
     setIsPredictShow(false)
@@ -28,6 +30,7 @@ export default function Form() {
   const handleInputFocus = () => {
     setIsPredictShow(true)
     setIsMapShow(false)
+    setIsFormShow(false)
   }
 
   useEffect(() => {
@@ -48,6 +51,7 @@ export default function Form() {
       <GepInput action={handleInputFocus} />
       <GeoResult status={isPredictShow} action={handleChoosePlaceFromMap} />
       <GeoMap status={isMapShow} />
+      <GeoForm status={isFormShow} />
     </div>
   )
 }

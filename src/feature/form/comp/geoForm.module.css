@@ -1,0 +1,59 @@
+.container {
+  position: relative;
+  padding: 12px 8px;
+  width: 100%;
+  margin-bottom: 20px;
+  transition: .5s;
+  height: 100%;
+}
+
+.container.hide {
+  padding: 0;
+  height: 0;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.container > ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.container > ul > li {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+}
+
+.container > ul > li > input {
+  background-color: transparent;
+  height: 40px;
+  border: none;
+  border-bottom: 1px solid #999;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.container > ul > li > input:focus {
+  outline: none;
+}
+
+.container > button {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 450px;
+  border: none;
+  border-radius: 20px;
+  height: 45px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 10px 10px 30px #d5d5d5,
+             -10px -10px 30px #ffffff;
+}
