@@ -1,10 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-interface GoogleMapPlaceModel {
+interface GoogleMapPredictPlaceModel {
   description: string
   structured_formatting: {
     main_text: string
   }
+  place_id: string
+}
+
+interface GoogleMapGeoPlaceModel {
+  formatted_address: string
+  lat: string
+  lng: string
   place_id: string
 }
 
@@ -20,20 +27,50 @@ const initialState: GoogleMapState = {
   googlePredictResult: [],
 }
 
+type GeoResultModel = ReturnType<typeof geoResultFormat>
+
+const geoResultFormat = (results: Array<GoogleMapGeoPlaceModel>) =>
+  results.map((result) => ({
+    full: result.formatted_address,
+    lat: result.lat,
+    lon: result.lng,
+    id: result.place_id,
+  }))
+
 type PredictResultModel = ReturnType<typeof predictResultFormat>
 
-const predictResultFormat = (results: Array<GoogleMapPlaceModel>) =>
+const predictResultFormat = (results: Array<GoogleMapPredictPlaceModel>) =>
   results.map((result) => ({
     full: result.description,
     short: result.structured_formatting.main_text,
     id: result.place_id,
   }))
 
+export const fetchPlaceByMatrix = createAsyncThunk<
+  GeoResultModel,
+  { lat: number; lon: number },
+  { state: { google: { googleGeocoderService: any } } }
+>('google/fetchPlaceByMatrix', async (Matrix, { getState }) => {
+  const { googleGeocoderService: service } = getState().google
+  const option = {
+    location: { lat: Matrix.lat, lng: Matrix.lon },
+    region: 'tw',
+  }
+  const response = await new Promise<Array<GoogleMapGeoPlaceModel>>((resolve) => {
+    console.log('Because Geo API, cost money $0.05')
+    service.geocode(option, (data, status) => {
+      if (status === 'OK' && !!data[0]) resolve(data)
+      resolve([])
+    })
+  })
+  return geoResultFormat(response)
+})
+
 export const fetchPredictResultByWord = createAsyncThunk<
   PredictResultModel,
   string,
   { state: { google: { googleAutocompleteService: any } } }
->('users/fetchPredictResultByWord', async (word: string, { getState }) => {
+>('google/fetchPredictResultByWord', async (word: string, { getState }) => {
   const { googleAutocompleteService: service } = getState().google
   // * TODO add option.bounds ( Map 4 corner )
   const option = {
@@ -41,7 +78,8 @@ export const fetchPredictResultByWord = createAsyncThunk<
     input: word,
     type: 'establishment',
   }
-  const response = await new Promise<Array<GoogleMapPlaceModel>>((resolve) => {
+  const response = await new Promise<Array<GoogleMapPredictPlaceModel>>((resolve) => {
+    console.log('Because Places API, cost money $0.00283')
     service.getPlacePredictions(option, (data) => resolve(data))
   })
   return predictResultFormat(response)

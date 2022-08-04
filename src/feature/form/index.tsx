@@ -3,6 +3,7 @@ import { useScript } from '../../hook/useScript'
 
 import { useAppDispatch } from '../../store'
 import { setGoogleAutocompleteService, setGoogleGeocoderService } from '../../store/google'
+import { setGpsTrace } from '../../store/address'
 
 import GepInput from './comp/geoInput'
 import GeoMap from './comp/geoMap'
@@ -31,6 +32,7 @@ export default function Form() {
 
   useEffect(() => {
     if (loaded) {
+      dispatch(setGpsTrace())
       window.initMap = () => {
         const autocompleteService = new window.google.maps.places.AutocompleteService()
         const geocoderService = new window.google.maps.Geocoder()
