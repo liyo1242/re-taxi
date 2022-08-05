@@ -8,10 +8,12 @@ interface AddressState {
   originPlaceFullText: string
   originPlaceLat: number
   originPlaceLon: number
+  isOriginPlaceGeoValid: boolean
   destinationPlace: string
   destinationPlaceFullText: string
   destinationPlaceLat: number
   destinationPlaceLon: number
+  isDestinationPlaceGeoValid: boolean
   focusInput?: 'origin' | 'destination'
 }
 
@@ -32,10 +34,12 @@ const initialState: AddressState = {
   originPlaceFullText: '',
   originPlaceLat: 0,
   originPlaceLon: 0,
+  isOriginPlaceGeoValid: false,
   destinationPlace: '',
   destinationPlaceFullText: '',
   destinationPlaceLat: 0,
   destinationPlaceLon: 0,
+  isDestinationPlaceGeoValid: false,
 }
 
 export const setGpsTrace = createAsyncThunk('address/setGpsTrace', async (_, { dispatch }) => {
@@ -73,6 +77,8 @@ export const addressSlice = createSlice({
     setOriginGeo: (state, action: PayloadAction<SetGeoAction>) => {
       state.originPlaceLat = action.payload.lat
       state.originPlaceLon = action.payload.lon
+      if (action.payload.lat && action.payload.lon) state.isOriginPlaceGeoValid = true
+      else state.isOriginPlaceGeoValid = false
     },
     setDestination: (state, action: PayloadAction<SetPlaceAction>) => {
       state.destinationPlace = action.payload.address
@@ -81,6 +87,8 @@ export const addressSlice = createSlice({
     setDestinationGeo: (state, action: PayloadAction<SetGeoAction>) => {
       state.destinationPlaceLat = action.payload.lat
       state.destinationPlaceLon = action.payload.lon
+      if (action.payload.lat && action.payload.lon) state.isDestinationPlaceGeoValid = true
+      else state.isDestinationPlaceGeoValid = false
     },
     setFocusStatus: (state, action: PayloadAction<'origin' | 'destination'>) => {
       state.focusInput = action.payload

@@ -10,8 +10,12 @@ interface GoogleMapPredictPlaceModel {
 
 interface GoogleMapGeoPlaceModel {
   formatted_address: string
-  lat: string
-  lng: string
+  geometry: {
+    location: {
+      lat: () => number
+      lng: () => number
+    }
+  }
   place_id: string
 }
 
@@ -32,8 +36,8 @@ type GeoResultModel = ReturnType<typeof geoResultFormat>
 const geoResultFormat = (results: Array<GoogleMapGeoPlaceModel>) =>
   results.map((result) => ({
     full: result.formatted_address,
-    lat: result.lat,
-    lon: result.lng,
+    lat: result.geometry.location.lat(),
+    lon: result.geometry.location.lng(),
     id: result.place_id,
   }))
 
@@ -46,14 +50,14 @@ const predictResultFormat = (results: Array<GoogleMapPredictPlaceModel>) =>
     id: result.place_id,
   }))
 
-export const fetchPlaceByMatrix = createAsyncThunk<
+export const fetchPlaceByAddress = createAsyncThunk<
   GeoResultModel,
-  { lat: number; lon: number },
+  string,
   { state: { google: { googleGeocoderService: any } } }
->('google/fetchPlaceByMatrix', async (Matrix, { getState }) => {
+>('google/fetchPlaceByAddress', async (address, { getState }) => {
   const { googleGeocoderService: service } = getState().google
   const option = {
-    location: { lat: Matrix.lat, lng: Matrix.lon },
+    address,
     region: 'tw',
   }
   const response = await new Promise<Array<GoogleMapGeoPlaceModel>>((resolve) => {
@@ -63,6 +67,27 @@ export const fetchPlaceByMatrix = createAsyncThunk<
       resolve([])
     })
   })
+  return geoResultFormat(response)
+})
+
+export const fetchPlaceByMatrix = createAsyncThunk<
+  GeoResultModel,
+  { lat: number; lon: number },
+  { state: { google: { googleGeocoderService: any } } }
+>('google/fetchPlaceByMatrix', async (matrix, { getState }) => {
+  const { googleGeocoderService: service } = getState().google
+  const option = {
+    location: { lat: matrix.lat, lng: matrix.lon },
+    region: 'tw',
+  }
+  const response = await new Promise<Array<GoogleMapGeoPlaceModel>>((resolve) => {
+    console.log('Because Geo API, cost money $0.05')
+    service.geocode(option, (data, status) => {
+      if (status === 'OK' && !!data[0]) resolve(data)
+      resolve([])
+    })
+  })
+  console.log('Geo API result', response)
   return geoResultFormat(response)
 })
 

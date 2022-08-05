@@ -1,6 +1,6 @@
 import classes from './geoResult.module.css'
 import { useAppDispatch, useAppSelector } from '../../../store'
-import { setOrigin, setDestination } from '../../../store/address'
+import { setOrigin, setDestination, setOriginGeo, setDestinationGeo } from '../../../store/address'
 
 interface GeoResultProps {
   action: () => void
@@ -15,8 +15,10 @@ export default function GeoResult(props: GeoResultProps) {
   const handleClickPredictResult = (address: string, fullAddress: string) => {
     if (focusInput === 'origin') {
       dispatch(setOrigin({ address, fullAddress }))
+      dispatch(setOriginGeo({ lat: 0, lon: 0 }))
     } else if (focusInput === 'destination') {
       dispatch(setDestination({ address, fullAddress }))
+      dispatch(setDestinationGeo({ lat: 0, lon: 0 }))
     }
   }
 
