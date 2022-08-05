@@ -8,7 +8,7 @@ interface FlagIconProps {
 
 const x = 30
 const y = 60
-const maxDeg = 15
+const maxDeg = 12
 let count = 0
 let mode = -1
 

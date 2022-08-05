@@ -56,6 +56,12 @@ Other areas that could be optimized are the user experience of selecting address
 
 After you have cloned, there are a few things you must do
 
+- Add local env `.env.local` to place your **google map key**
+
+```json
+REACT_APP_GOOGLE_KEY="YOUR_KEY"
+```
+
 - Install the dependencies
 
 ```bash
