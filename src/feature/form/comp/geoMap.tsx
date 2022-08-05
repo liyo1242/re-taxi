@@ -63,35 +63,31 @@ export default function GeoMap(props: GeoMapProps) {
     if (mapInstance) mapIns = mapInstance
     else mapIns = map // * comp state
 
-    if (mapIns) {
-      if (focusInput === 'origin') {
-        if (originPlaceFullText) {
-          if (!(originPlaceLat && originPlaceLon)) {
-            const response = await dispatch(fetchPlaceByAddress(originPlaceFullText))
-            if (fetchPlaceByAddress.fulfilled.match(response) && !!response.payload[0]) {
-              mapIns.setCenter({ lat: response.payload[0].lat, lng: response.payload[0].lon })
-              dispatch(setOriginGeo({ lat: response.payload[0].lat, lon: response.payload[0].lon }))
-            }
-          } else {
-            mapIns.setCenter({ lat: originPlaceLat, lng: originPlaceLon })
-          }
+    if (!mapIns) return
+
+    if (focusInput === 'origin' && originPlaceFullText) {
+      if (!(originPlaceLat && originPlaceLon)) {
+        const response = await dispatch(fetchPlaceByAddress(originPlaceFullText))
+        if (fetchPlaceByAddress.fulfilled.match(response) && !!response.payload[0]) {
+          mapIns.setCenter({ lat: response.payload[0].lat, lng: response.payload[0].lon })
+          dispatch(setOriginGeo({ lat: response.payload[0].lat, lon: response.payload[0].lon }))
         }
-      } else if (focusInput === 'destination') {
-        if (destinationPlaceFullText) {
-          if (!(destinationPlaceLat && destinationPlaceLon)) {
-            const response = await dispatch(fetchPlaceByAddress(destinationPlaceFullText))
-            if (fetchPlaceByAddress.fulfilled.match(response) && !!response.payload[0]) {
-              mapIns.setCenter({ lat: response.payload[0].lat, lng: response.payload[0].lon })
-              dispatch(
-                setDestinationGeo({
-                  lat: response.payload[0].lat,
-                  lon: response.payload[0].lon,
-                })
-              )
-            }
-          } else {
-            mapIns.setCenter({ lat: destinationPlaceLat, lng: destinationPlaceLon })
-          }
+      } else {
+        mapIns.setCenter({ lat: originPlaceLat, lng: originPlaceLon })
+      }
+    } else if (focusInput === 'destination' && destinationPlaceFullText) {
+      if (!(destinationPlaceLat && destinationPlaceLon)) {
+        const response = await dispatch(fetchPlaceByAddress(destinationPlaceFullText))
+        if (fetchPlaceByAddress.fulfilled.match(response) && !!response.payload[0]) {
+          mapIns.setCenter({ lat: response.payload[0].lat, lng: response.payload[0].lon })
+          dispatch(
+            setDestinationGeo({
+              lat: response.payload[0].lat,
+              lon: response.payload[0].lon,
+            })
+          )
+        } else {
+          mapIns.setCenter({ lat: destinationPlaceLat, lng: destinationPlaceLon })
         }
       }
     }

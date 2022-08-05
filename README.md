@@ -29,6 +29,7 @@
 ## About This Project
 
 This project includes 1 main part, optimize API efficiency when relying on **google map API** to select addresses
+
 The main reason for refactoring this project is to bring to a close what I did not do before.
 
 ### Prerequisites
