@@ -8,6 +8,7 @@ import {
 } from '../../../store/google'
 import { setFocusStatus, setOrigin, setOriginGeo } from '../../../store/address'
 import { useEffect, useState } from 'react'
+import { debounce } from '../../../utils'
 
 interface GeoInputProps {
   action: () => void
@@ -22,12 +23,9 @@ export default function GeoInput(props: GeoInputProps) {
   const destinationPlaceFullText = useAppSelector((state) => state.address.destinationPlaceFullText)
   const dispatch = useAppDispatch()
 
-  const handleOriginInputChange = async (event) => {
+  const handleOriginInputChange = (event) => {
     setOriginInputValue(event.target.value)
-    const response = await dispatch(fetchPredictResultByWord(event.target.value))
-    if (fetchPredictResultByWord.fulfilled.match(response)) {
-      dispatch(setGooglePredictResult(response.payload))
-    }
+    _generatePredictResult(event.target.value)
   }
 
   const handleOriginFocus = () => {
@@ -35,13 +33,20 @@ export default function GeoInput(props: GeoInputProps) {
     props.action()
   }
 
-  const handleDestinationInputChange = async (event) => {
+  const handleDestinationInputChange = (event) => {
     setDestinationInputValue(event.target.value)
-    const response = await dispatch(fetchPredictResultByWord(event.target.value))
+    _generatePredictResult(event.target.value)
+  }
+
+  const _generatePredictResult = debounce(async (text: string) => {
+    if (process.env.REACT_APP_ENABLE_PREDICT_RESULT !== 'true') {
+      return
+    }
+    const response = await dispatch(fetchPredictResultByWord(text))
     if (fetchPredictResultByWord.fulfilled.match(response)) {
       dispatch(setGooglePredictResult(response.payload))
     }
-  }
+  }, +(process.env.REACT_APP_ENABLE_PREDICT_DELAY_TIME || 0))
 
   const handleDestinationFocus = () => {
     dispatch(setFocusStatus('destination'))

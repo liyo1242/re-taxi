@@ -30,7 +30,9 @@ export default function GeoResult(props: GeoResultProps) {
             {result.full}
           </li>
         ))}
-        <li onClick={props.action}>Choose From Map</li>
+        {process.env.REACT_APP_ENABLE_MAP === 'true' && (
+          <li onClick={props.action}>Choose From Map</li>
+        )}
       </ul>
     </div>
   )

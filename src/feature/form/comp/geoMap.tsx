@@ -7,6 +7,8 @@ import { useAppSelector, useAppDispatch } from '../../../store'
 import { fetchPlaceByMatrix, fetchPlaceByAddress } from '../../../store/google'
 import { setOrigin, setOriginGeo, setDestination, setDestinationGeo } from '../../../store/address'
 
+import { debounce } from '../../../utils'
+
 interface GeoMapProps {
   status: boolean
 }
@@ -43,6 +45,7 @@ export default function GeoMap(props: GeoMapProps) {
     }
 
     const mapInstance = new window.google.maps.Map(document.getElementById('map'), option)
+    console.log('Because Map API, cost money $0.07')
     // * add map gesture listener
     mapInstance.addListener('drag', () => setIsDrag(true))
     mapInstance.addListener('dragend', () => setIsDrag(false))
@@ -94,7 +97,10 @@ export default function GeoMap(props: GeoMapProps) {
     }
   }
 
-  const handleMapDragEndSetCenterAddress = async () => {
+  const handleMapDragEndSetCenterAddress = debounce(async () => {
+    if (process.env.REACT_APP_ENABLE_MAP_DRAG_SELECT !== 'true') {
+      return
+    }
     if (map) {
       const center = {
         lat: map.getCenter().lat(),
@@ -118,7 +124,7 @@ export default function GeoMap(props: GeoMapProps) {
         }
       }
     }
-  }
+  }, +(process.env.REACT_APP_ENABLE_MAP_DRAG_DELAY_TIME || 0))
 
   // * replace listener effect
   useEffect(() => {
