@@ -4,7 +4,7 @@ import mapStyle from '../../../style/map.json'
 import FlagIcon from './flag'
 
 import { useAppSelector, useAppDispatch } from '../../../store'
-import { fetchPlaceByMatrix, fetchPlaceByAddress } from '../../../store/google'
+import { fetchPlaceByMatrix, fetchPlaceByAddress, addGoogleApiCost } from '../../../store/google'
 import { setOrigin, setOriginGeo, setDestination, setDestinationGeo } from '../../../store/address'
 
 import { debounce } from '../../../utils'
@@ -46,6 +46,7 @@ export default function GeoMap(props: GeoMapProps) {
 
     const mapInstance = new window.google.maps.Map(document.getElementById('map'), option)
     console.log('Because Map API, cost money $0.07')
+    dispatch(addGoogleApiCost(0.07))
     // * add map gesture listener
     mapInstance.addListener('drag', () => setIsDrag(true))
     mapInstance.addListener('dragend', () => setIsDrag(false))
