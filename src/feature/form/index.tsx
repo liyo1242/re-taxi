@@ -33,6 +33,17 @@ export default function Form() {
     setIsFormShow(false)
   }
 
+  const handleReturn = () => {
+    if (isPredictShow) {
+      setIsPredictShow(false)
+      setIsFormShow(true)
+    }
+    if (isMapShow) {
+      setIsPredictShow(true)
+      setIsMapShow(false)
+    }
+  }
+
   useEffect(() => {
     if (loaded) {
       dispatch(setGpsTrace())
@@ -47,7 +58,10 @@ export default function Form() {
 
   return (
     <div className={classes.container}>
-      <h2>Form Component</h2>
+      <div className={classes.header}>
+        <span onClick={handleReturn}>return</span>
+        <h2>Form Component</h2>
+      </div>
       <GepInput action={handleInputFocus} />
       <GeoResult status={isPredictShow} action={handleChoosePlaceFromMap} />
       <GeoMap status={isMapShow} />
