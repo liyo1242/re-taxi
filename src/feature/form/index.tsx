@@ -59,8 +59,13 @@ export default function Form() {
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <span onClick={handleReturn}>return</span>
-        <h2>Form Component</h2>
+        <IsShowCompoment isShow={!isFormShow} time={300}>
+          <div className={classes.return} onClick={handleReturn}>
+            <span />
+            <p>Previous</p>
+          </div>
+        </IsShowCompoment>
+        <h2>Call Taxi</h2>
       </div>
       <GepInput action={handleInputFocus} />
       <GeoResult status={isPredictShow} action={handleChoosePlaceFromMap} />
@@ -68,4 +73,20 @@ export default function Form() {
       <GeoForm status={isFormShow} />
     </div>
   )
+}
+
+import { PropsWithChildren } from 'react'
+
+interface IsShowCompomentProps {
+  time: number
+  isShow: boolean
+}
+
+function IsShowCompoment(props: PropsWithChildren<IsShowCompomentProps>) {
+  const style = {
+    transition: props.time / 1000 + 's',
+    opacity: props.isShow ? '1' : '0',
+  }
+
+  return <div style={style}>{props.children}</div>
 }
