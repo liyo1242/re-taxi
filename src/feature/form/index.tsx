@@ -68,7 +68,7 @@ export default function Form() {
         <h2>Call Taxi</h2>
       </div>
       <GepInput action={handleInputFocus} />
-      <GeoResult status={isPredictShow} action={handleChoosePlaceFromMap} />
+      <GeoResult status={isPredictShow} action={handleChoosePlaceFromMap} return={handleReturn} />
       <GeoMap status={isMapShow} />
       <GeoForm status={isFormShow} />
     </div>

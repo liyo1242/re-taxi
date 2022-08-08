@@ -26,6 +26,9 @@ export default function GeoInput(props: GeoInputProps) {
   const handleOriginInputChange = (event) => {
     setOriginInputValue(event.target.value)
     _generatePredictResult(event.target.value)
+    if (!event.target.value) {
+      dispatch(setGooglePredictResult([]))
+    }
   }
 
   const handleOriginFocus = () => {
@@ -36,6 +39,9 @@ export default function GeoInput(props: GeoInputProps) {
   const handleDestinationInputChange = (event) => {
     setDestinationInputValue(event.target.value)
     _generatePredictResult(event.target.value)
+    if (!event.target.value) {
+      dispatch(setGooglePredictResult([]))
+    }
   }
 
   const _generatePredictResult = debounce(async (text: string) => {

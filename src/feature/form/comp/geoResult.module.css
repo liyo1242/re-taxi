@@ -34,3 +34,7 @@
   box-shadow:  10px 10px 30px #d5d5d5,
              -10px -10px 30px #ffffff;
 }
+
+.container > ul > li.action {
+  font-weight: bold;
+}
