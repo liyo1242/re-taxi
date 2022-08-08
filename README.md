@@ -21,6 +21,7 @@
   - [Prerequisites](#prerequisites)
 - [Useful Links](#useful-links)
 - [My Strategy](#my-strategy)
+  - [Another Notice](#another-notice)
 - [Usage](#usage)
 - [Project structure](#project-structure)
 
@@ -52,6 +53,17 @@ In my previous work experience, I learned that the most traffic-consuming points
 - The **map selection** part will use a slow trigger strategy
 
 Other areas that could be optimized are the user experience of selecting addresses
+
+#### Another Notice
+
+1.  When dragging the map to select a location, somethings should be noted
+
+    - Normally, we may want to use debounces to save Api traffic
+      ![notice-1.png](.asset/notice-1.png)
+    - When the setting is triggered at the end of dragging, this may run into a trap, You can see that there is one more event trigger in the diagram
+      ![notice-2.png](.asset/notice-2.png)
+    - You should do the reset timer at the start of the next drag
+      ![notice-3.png](.asset/notice-3.png)
 
 ## Usage
 
