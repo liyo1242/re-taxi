@@ -1,0 +1,12 @@
+.icon {
+  position: absolute;
+  top: calc(50% - 45px);
+  left: calc(50% + 25px);
+  -webkit-animation: spin 1s infinite cubic-bezier(0.7, 0.4, 0.5, 0.7);
+}
+
+@keyframes spin {
+  to {
+       -webkit-transform: translateZ(0) rotate(360deg);
+  }
+}

@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import classes from './geoMap.module.css'
 import mapStyle from '../../../style/map.json'
 import FlagIcon from './flag'
+import LoadingIcon from './loading'
 
 import { useAppSelector, useAppDispatch } from '../../../store'
 import { fetchPlaceByMatrix, fetchPlaceByAddress, addGoogleApiCost } from '../../../store/google'
 import { setOrigin, setOriginGeo, setDestination, setDestinationGeo } from '../../../store/address'
-
-import { debounce } from '../../../utils'
 
 interface GeoMapProps {
   status: boolean
@@ -94,7 +93,7 @@ export default function GeoMap(props: GeoMapProps) {
     }
   }
 
-  const handleMapDragEndSetCenterAddress = debounce(async () => {
+  const handleMapDragEndSetCenterAddress = async () => {
     if (process.env.REACT_APP_ENABLE_MAP_DRAG_SELECT !== 'true') {
       return
     }
@@ -121,12 +120,23 @@ export default function GeoMap(props: GeoMapProps) {
         }
       }
     }
-  }, +(process.env.REACT_APP_ENABLE_MAP_DRAG_DELAY_TIME || 0))
+  }
 
   // * replace listener effect
+  const [dragTaskTimer, setDragTaskTimer] = useState<NodeJS.Timeout | null>(null)
   useEffect(() => {
     if (!isDrag) {
-      handleMapDragEndSetCenterAddress()
+      if (dragTaskTimer) clearTimeout(dragTaskTimer)
+      const timerId = setTimeout(() => {
+        handleMapDragEndSetCenterAddress()
+        setDragTaskTimer(null)
+      }, +(process.env.REACT_APP_ENABLE_MAP_DRAG_DELAY_TIME || 0))
+      setDragTaskTimer(timerId)
+    } else {
+      if (dragTaskTimer) {
+        clearTimeout(dragTaskTimer)
+        setDragTaskTimer(null)
+      }
     }
   }, [isDrag])
 
@@ -143,6 +153,7 @@ export default function GeoMap(props: GeoMapProps) {
     <div className={`${classes.container} ${props.status ? '' : classes.hide}`}>
       <div id="map" style={{ width: '100%', height: '100%' }} />
       <FlagIcon active={isDrag} />
+      <LoadingIcon size={20} active={!!dragTaskTimer} />
     </div>
   )
 }
