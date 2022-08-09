@@ -90,19 +90,20 @@ export const createOrder = createAsyncThunk<
     destinationPlaceLon,
     isDestinationPlaceGeoValid,
   } = getState().address
-
+  let originGeo = {},
+    destinationGeo = {}
   dispatch(setOption(option))
   if (originPlace && !isOriginPlaceGeoValid) {
     console.log('process origin place')
     // * dispatch api trans text to geo
     const response = await dispatch(fetchPlaceByAddress(originPlace))
     if (fetchPlaceByAddress.fulfilled.match(response)) {
-      dispatch(
-        setOriginGeo({
-          lat: response.payload[0].lat,
-          lon: response.payload[0].lon,
-        })
-      )
+      const geo = {
+        lat: response.payload[0].lat,
+        lon: response.payload[0].lon,
+      }
+      originGeo = geo
+      dispatch(setOriginGeo(geo))
     }
   }
 
@@ -111,12 +112,12 @@ export const createOrder = createAsyncThunk<
     // * dispatch api trans text to geo
     const response = await dispatch(fetchPlaceByAddress(destinationPlace))
     if (fetchPlaceByAddress.fulfilled.match(response)) {
-      dispatch(
-        setDestinationGeo({
-          lat: response.payload[0].lat,
-          lon: response.payload[0].lon,
-        })
-      )
+      const geo = {
+        lat: response.payload[0].lat,
+        lon: response.payload[0].lon,
+      }
+      destinationGeo = geo
+      dispatch(setDestinationGeo(geo))
     }
   }
   return {
@@ -125,12 +126,14 @@ export const createOrder = createAsyncThunk<
       address: originPlace,
       lat: originPlaceLat,
       lon: originPlaceLon,
+      ...originGeo,
     },
     destination: destinationPlace
       ? {
           address: destinationPlace,
           lat: destinationPlaceLat,
           lon: destinationPlaceLon,
+          ...destinationGeo,
         }
       : undefined,
   }
