@@ -1,12 +1,16 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
+import type { RootState, AppDispatch } from './type'
 
 import addressReducer from './address'
 import layoutReducer from './layout'
 import googleReducer from './google'
 
 import { addressApi } from './api/address'
+
+// * setup middleware
+export const listenerMiddleware = createListenerMiddleware()
 
 export const store = configureStore({
   reducer: {
@@ -18,12 +22,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(addressApi.middleware),
+    })
+      .prepend(listenerMiddleware.middleware)
+      .concat(addressApi.middleware),
 })
-
-export type RootState = ReturnType<typeof store.getState>
-
-export type AppDispatch = typeof store.dispatch
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
