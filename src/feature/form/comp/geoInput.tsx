@@ -49,10 +49,7 @@ export default function GeoInput(props: GeoInputProps) {
       return
     }
     if (!text) return
-    const response = await dispatch(fetchPredictResultByWord(text))
-    if (fetchPredictResultByWord.fulfilled.match(response)) {
-      dispatch(setGooglePredictResult(response.payload))
-    }
+    await dispatch(fetchPredictResultByWord(text))
   }, +(process.env.REACT_APP_ENABLE_PREDICT_DELAY_TIME || 0))
 
   const handleDestinationFocus = () => {
