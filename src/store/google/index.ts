@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
 interface GoogleMapPredictPlaceModel {
   description: string
   structured_formatting: {

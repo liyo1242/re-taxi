@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { fetchPlaceByAddress } from '../google'
+import type { PostTaxiOrder } from '../api/address'
 
-interface AddressState {
+export interface AddressState {
   gpsPlaceLat: number
   gpsPlaceLon: number
   originPlace: string
@@ -15,6 +17,11 @@ interface AddressState {
   destinationPlaceLon: number
   isDestinationPlaceGeoValid: boolean
   focusInput?: 'origin' | 'destination'
+  option: {
+    name?: string
+    phone?: string
+  }
+  orderGuid: string
 }
 
 interface SetPlaceAction {
@@ -40,12 +47,14 @@ const initialState: AddressState = {
   destinationPlaceLat: 0,
   destinationPlaceLon: 0,
   isDestinationPlaceGeoValid: false,
+  option: {},
+  orderGuid: '',
 }
 
 export const setGpsTrace = createAsyncThunk('address/setGpsTrace', async (_, { dispatch }) => {
   // * high accuracy used first
   let watchId = 0
-  const result = await new Promise((resolve) => {
+  await new Promise((resolve) => {
     watchId = navigator.geolocation.watchPosition(
       (location) => {
         dispatch(setGpsPlace({ lat: location.coords.latitude, lon: location.coords.longitude }))
@@ -63,7 +72,68 @@ export const setGpsTrace = createAsyncThunk('address/setGpsTrace', async (_, { d
       }
     )
   })
-  return result
+})
+
+export const createOrder = createAsyncThunk<
+  PostTaxiOrder,
+  { phone: string; name: string },
+  { state: { address: AddressState; google: { googleGeocoderService: any } } }
+>('address/createOrder', async (option, { getState, dispatch }) => {
+  console.log('process Middleware')
+  const {
+    originPlace,
+    originPlaceLat,
+    originPlaceLon,
+    isOriginPlaceGeoValid,
+    destinationPlace,
+    destinationPlaceLat,
+    destinationPlaceLon,
+    isDestinationPlaceGeoValid,
+  } = getState().address
+
+  dispatch(setOption(option))
+  if (originPlace && !isOriginPlaceGeoValid) {
+    console.log('process origin place')
+    // * dispatch api trans text to geo
+    const response = await dispatch(fetchPlaceByAddress(originPlace))
+    if (fetchPlaceByAddress.fulfilled.match(response)) {
+      dispatch(
+        setOriginGeo({
+          lat: response.payload[0].lat,
+          lon: response.payload[0].lon,
+        })
+      )
+    }
+  }
+
+  if (destinationPlace && !isDestinationPlaceGeoValid) {
+    console.log('process destination place')
+    // * dispatch api trans text to geo
+    const response = await dispatch(fetchPlaceByAddress(destinationPlace))
+    if (fetchPlaceByAddress.fulfilled.match(response)) {
+      dispatch(
+        setDestinationGeo({
+          lat: response.payload[0].lat,
+          lon: response.payload[0].lon,
+        })
+      )
+    }
+  }
+  return {
+    ...option,
+    origin: {
+      address: originPlace,
+      lat: originPlaceLat,
+      lon: originPlaceLon,
+    },
+    destination: destinationPlace
+      ? {
+          address: destinationPlace,
+          lat: destinationPlaceLat,
+          lon: destinationPlaceLon,
+        }
+      : undefined,
+  }
 })
 
 export const addressSlice = createSlice({
@@ -97,6 +167,10 @@ export const addressSlice = createSlice({
       state.gpsPlaceLat = action.payload.lat
       state.gpsPlaceLon = action.payload.lon
     },
+    setOption: (state, action: PayloadAction<{ name: string; phone: string }>) => {
+      state.option.name = action.payload.name
+      state.option.phone = action.payload.phone
+    },
   },
 })
 
@@ -107,6 +181,7 @@ export const {
   setDestination,
   setDestinationGeo,
   setGpsPlace,
+  setOption,
 } = addressSlice.actions
 
 export default addressSlice.reducer

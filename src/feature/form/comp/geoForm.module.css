@@ -37,12 +37,19 @@
   font-size: 18px;
 }
 
+.container > ul > li > input.inValid {
+  border-bottom: 1px solid red;
+}
+
 .container > ul > li > input:focus {
   outline: none;
 }
 
 .container > button {
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
@@ -56,4 +63,8 @@
   font-weight: bold;
   box-shadow: 10px 10px 30px #d5d5d5,
              -10px -10px 30px #ffffff;
+}
+
+.container > button > em {
+  margin-left: 15px;
 }

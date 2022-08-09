@@ -153,7 +153,9 @@ export default function GeoMap(props: GeoMapProps) {
     <div className={`${classes.container} ${props.status ? '' : classes.hide}`}>
       <div id="map" style={{ width: '100%', height: '100%' }} />
       <FlagIcon active={isDrag} />
-      <LoadingIcon size={20} active={!!dragTaskTimer} />
+      <em className={classes.icon}>
+        <LoadingIcon size={20} active={!!dragTaskTimer} />
+      </em>
     </div>
   )
 }

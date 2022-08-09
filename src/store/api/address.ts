@@ -10,6 +10,23 @@ interface FavoriteApiModel {
   }
 }
 
+export interface PostTaxiOrder {
+  name: string
+  phone: string
+  origin: {
+    address: string
+    lat: number
+    lon: number
+    id?: string
+  }
+  destination?: {
+    address: string
+    lat: number
+    lon: number
+    id?: string
+  }
+}
+
 export const addressApi = createApi({
   reducerPath: 'addressApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
@@ -22,7 +39,15 @@ export const addressApi = createApi({
       query: (_limit) => `history?_start=0&_limit=${_limit}`,
       transformResponse: (rawResult: Array<FavoriteApiModel>) => ToUnCapitalize(rawResult),
     }),
+    postTaxiOrder: builder.mutation<string, PostTaxiOrder>({
+      query: (body) => ({
+        url: `order`,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 })
 
-export const { useGetFavoriteAddressQuery, useGetHistoryAddressQuery } = addressApi
+export const { useGetFavoriteAddressQuery, useGetHistoryAddressQuery, usePostTaxiOrderMutation } =
+  addressApi
