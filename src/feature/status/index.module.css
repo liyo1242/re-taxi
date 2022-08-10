@@ -1,0 +1,32 @@
+.container {
+  width: 100%;
+  height: calc(100vh - var(--nav-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container > span {
+  margin-top: 24px;
+  font-size: 18px;
+}
+
+.container > button {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 450px;
+  border: none;
+  border-radius: 20px;
+  height: 45px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 10px 10px 30px #d5d5d5,
+             -10px -10px 30px #ffffff;
+}

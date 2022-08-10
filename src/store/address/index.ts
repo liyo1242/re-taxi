@@ -174,6 +174,9 @@ export const addressSlice = createSlice({
       state.option.name = action.payload.name
       state.option.phone = action.payload.phone
     },
+    setOrderId: (state, action: PayloadAction<string>) => {
+      state.orderGuid = action.payload
+    },
   },
 })
 
@@ -185,6 +188,7 @@ export const {
   setDestinationGeo,
   setGpsPlace,
   setOption,
+  setOrderId,
 } = addressSlice.actions
 
 export default addressSlice.reducer

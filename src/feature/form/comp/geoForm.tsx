@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import classes from './geoForm.module.css'
 import { useAppDispatch } from '../../../store'
-import { createOrder } from '../../../store/address'
+import { createOrder, setOrderId } from '../../../store/address'
 import LoadingIcon from './loading'
 import { usePostTaxiOrderMutation } from '../../../store/api/address'
+import { useNavigate } from 'react-router-dom'
 
 interface GeoFromProps {
   status: boolean
@@ -16,6 +17,7 @@ export default function GeoFrom(props: GeoFromProps) {
   const [submitLoading, setSubmitLoading] = useState(false)
   const dispatch = useAppDispatch()
   const [postTaxiOrder] = usePostTaxiOrderMutation()
+  const navigate = useNavigate()
 
   const handleSubmit = async () => {
     setCheckRequire(true)
@@ -23,8 +25,13 @@ export default function GeoFrom(props: GeoFromProps) {
       setSubmitLoading(true)
       const response = await dispatch(createOrder({ phone, name }))
       if (createOrder.fulfilled.match(response)) {
-        await postTaxiOrder(response.payload)
+        const result = await postTaxiOrder(response.payload)
+        // * Normally, it should return guid
         setSubmitLoading(false)
+        if ('data' in result) {
+          dispatch(setOrderId(result.data.id))
+          navigate('/status', { replace: true })
+        }
       }
     }
   }

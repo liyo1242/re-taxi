@@ -39,7 +39,7 @@ export const addressApi = createApi({
       query: (_limit) => `history?_start=0&_limit=${_limit}`,
       transformResponse: (rawResult: Array<FavoriteApiModel>) => ToUnCapitalize(rawResult),
     }),
-    postTaxiOrder: builder.mutation<string, PostTaxiOrder>({
+    postTaxiOrder: builder.mutation<{ id: string }, PostTaxiOrder>({
       query: (body) => ({
         url: `order`,
         method: 'POST',

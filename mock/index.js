@@ -58,4 +58,5 @@ module.exports = () => ({
       Geo: { Lat: 23.6695944, Lng: 120.2284757 },
     },
   ],
+  order: [],
 })

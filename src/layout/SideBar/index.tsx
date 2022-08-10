@@ -10,10 +10,10 @@ export default function SideBar() {
     <div className={`${classes.sideBar} ${sideBarStatus ? classes.active : ''}`}>
       <ul>
         <li>
-          <Link to="/form">叫車主頁</Link>
+          <Link to="/form">form</Link>
         </li>
         <li>
-          <Link to="/History">歷史紀錄</Link>
+          <Link to="/History">History</Link>
         </li>
       </ul>
     </div>

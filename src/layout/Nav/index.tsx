@@ -14,9 +14,9 @@ export default function Nav() {
 
   return (
     <div className={classes.nav} onClick={handleClickMenu}>
-      <div className={classes.menu}>
+      {/* <div className={classes.menu}>
         <span />
-      </div>
+      </div> */}
       <p className={classes.money}>Google API Total Cost: {cost}</p>
     </div>
   )
