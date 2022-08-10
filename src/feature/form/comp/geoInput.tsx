@@ -73,9 +73,9 @@ export default function GeoInput(props: GeoInputProps) {
       handleGpsUpdateOriginInput(gpsPlaceLat, gpsPlaceLon)
       dispatch(
         setMapBound(
-          window.google.maps.LatLngBounds(
-            window.google.maps.LatLng(gpsPlaceLat - 0.0003618, gpsPlaceLon - 0.0015395),
-            window.google.maps.LatLng(gpsPlaceLat + 0.0003618, gpsPlaceLon + 0.0015395)
+          new window.google.maps.LatLngBounds(
+            new window.google.maps.LatLng(gpsPlaceLat - 0.0003618, gpsPlaceLon - 0.0015395),
+            new window.google.maps.LatLng(gpsPlaceLat + 0.0003618, gpsPlaceLon + 0.0015395)
           )
         )
       )
