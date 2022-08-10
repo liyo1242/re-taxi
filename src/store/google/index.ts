@@ -1,3 +1,4 @@
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 interface GoogleMapPredictPlaceModel {
   description: string
@@ -22,6 +23,7 @@ export interface GoogleMapState {
   googleGeocoderService: any
   googleAutocompleteService: any
   googlePredictResult: PredictResultModel
+  predictResultCache: Record<string, PredictResultModel>
   cost: number
   bound: any // * google class
 }
@@ -30,6 +32,7 @@ const initialState: GoogleMapState = {
   googleGeocoderService: null,
   googleAutocompleteService: null,
   googlePredictResult: [],
+  predictResultCache: {},
   cost: 0,
   bound: undefined,
 }
@@ -92,7 +95,6 @@ export const fetchPlaceByMatrix = createAsyncThunk<
       resolve([])
     })
   })
-  console.log('Geo API result', response)
   return geoResultFormat(response)
 })
 
@@ -101,8 +103,15 @@ export const fetchPredictResultByWord = createAsyncThunk<
   string,
   { state: { google: GoogleMapState } }
 >('google/fetchPredictResultByWord', async (word: string, { dispatch, getState }) => {
-  const { googleAutocompleteService: service, bound } = getState().google
-  // * TODO add option.bounds ( Map 4 corner )
+  const { googleAutocompleteService: service, bound, predictResultCache } = getState().google
+  // * predict cache check
+  const cacheKey = `${word}#${Math.round(bound.getCenter().lat() * 1000) / 1000}#${
+    Math.round(bound.getCenter().lng() * 1000) / 1000
+  }`
+  if (predictResultCache[cacheKey]) {
+    return predictResultCache[cacheKey]
+  }
+  // * logic
   const option = {
     bounds: bound,
     componentRestrictions: { country: 'tw' },
@@ -114,13 +123,23 @@ export const fetchPredictResultByWord = createAsyncThunk<
     dispatch(addGoogleApiCost(0.00283))
     service.getPlacePredictions(option, (data) => resolve(data))
   })
-  return predictResultFormat(response)
+  const result = predictResultFormat(response)
+  // * prepare cache
+
+  dispatch(setPredictResultCache({ [cacheKey]: result }))
+  return result
 })
 
 export const googleSlice = createSlice({
   name: 'google',
   initialState,
   reducers: {
+    setPredictResultCache: (state, action: PayloadAction<Record<string, PredictResultModel>>) => {
+      state.predictResultCache = {
+        ...state.predictResultCache,
+        ...action.payload,
+      }
+    },
     setGoogleAutocompleteService: (state, action) => {
       state.googleAutocompleteService = action.payload
     },
@@ -133,7 +152,7 @@ export const googleSlice = createSlice({
     setMapBound: (state, action) => {
       state.bound = action.payload
     },
-    addGoogleApiCost: (state, action) => {
+    addGoogleApiCost: (state, action: PayloadAction<number>) => {
       state.cost = Math.round((action.payload + state.cost) * 100000) / 100000
     },
   },
@@ -150,6 +169,7 @@ export const {
   setGooglePredictResult,
   setMapBound,
   addGoogleApiCost,
+  setPredictResultCache,
 } = googleSlice.actions
 
 export default googleSlice.reducer
