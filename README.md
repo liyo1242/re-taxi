@@ -65,6 +65,18 @@ Other areas that could be optimized are the user experience of selecting address
     - You should do the reset timer at the start of the next drag
       ![notice-3.png](.asset/notice-3.png)
 
+2.  When fetch history data, you may encounter a situation where the default display usually specifies a certain number of orders to be displayed, and the origin and destination information may exist at the same time as the history of orders, so you may have the problem of **not knowing how many orders to take to just meet the demand**.
+    - only need 3 order (`/orders?query=3`)
+      ![notice-4.png](.asset/notice-4.png)
+    - need 4 order (`/orders?query=4`), but the last order destination is ignored
+      ![notice-5.png](.asset/notice-5.png)
+3.  There is one of user action you should be noted, in this situation, The user may take the following four actions (Let's ignore the possibility that it will just close and go away)
+    - **Press the previous button**, but the input text `taipei macdona` is need to be handle, In this project, it will revert to the previous input state
+    - **Continue entering text**, normal operation
+    - **Click on the address element**, normal operation
+    - **Press the map select button**, but the input text `taipei macdona` is need to be handle, In this project, it will use the first prediction as input and move the map center to the location
+      ![notice-6.png](.asset/notice-6.png)
+
 ## Usage
 
 After you have cloned, there are a few things you must do
