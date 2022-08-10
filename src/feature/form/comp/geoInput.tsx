@@ -5,6 +5,7 @@ import {
   fetchPredictResultByWord,
   fetchPlaceByMatrix,
   setGooglePredictResult,
+  setMapBound,
 } from '../../../store/google'
 import { setFocusStatus, setOrigin, setOriginGeo } from '../../../store/address'
 import { useEffect, useState } from 'react'
@@ -26,36 +27,35 @@ export default function GeoInput(props: GeoInputProps) {
   const handleOriginInputChange = (event) => {
     setOriginInputValue(event.target.value)
     _generatePredictResult(event.target.value)
-    if (!event.target.value) {
-      dispatch(setGooglePredictResult([]))
-    }
   }
 
   const handleOriginFocus = () => {
     dispatch(setFocusStatus('origin'))
+    _generatePredictResult(originInputValue)
     props.action()
   }
 
   const handleDestinationInputChange = (event) => {
     setDestinationInputValue(event.target.value)
     _generatePredictResult(event.target.value)
-    if (!event.target.value) {
-      dispatch(setGooglePredictResult([]))
-    }
+  }
+
+  const handleDestinationFocus = () => {
+    dispatch(setFocusStatus('destination'))
+    _generatePredictResult(destinationInputValue)
+    props.action()
   }
 
   const _generatePredictResult = debounce(async (text: string) => {
     if (process.env.REACT_APP_ENABLE_PREDICT_RESULT !== 'true') {
       return
     }
-    if (!text) return
+    if (!text) {
+      dispatch(setGooglePredictResult([]))
+      return
+    }
     await dispatch(fetchPredictResultByWord(text))
   }, +(process.env.REACT_APP_ENABLE_PREDICT_DELAY_TIME || 0))
-
-  const handleDestinationFocus = () => {
-    dispatch(setFocusStatus('destination'))
-    props.action()
-  }
 
   const handleGpsUpdateOriginInput = async (lat, lon) => {
     const response = await dispatch(fetchPlaceByMatrix({ lat, lon }))
@@ -71,6 +71,14 @@ export default function GeoInput(props: GeoInputProps) {
   useEffect(() => {
     if (gpsPlaceLat && gpsPlaceLon) {
       handleGpsUpdateOriginInput(gpsPlaceLat, gpsPlaceLon)
+      dispatch(
+        setMapBound(
+          window.google.maps.LatLngBounds(
+            window.google.maps.LatLng(gpsPlaceLat - 0.0003618, gpsPlaceLon - 0.0015395),
+            window.google.maps.LatLng(gpsPlaceLat + 0.0003618, gpsPlaceLon + 0.0015395)
+          )
+        )
+      )
     }
   }, [gpsPlaceLat, gpsPlaceLon])
 

@@ -5,7 +5,12 @@ import FlagIcon from './flag'
 import LoadingIcon from './loading'
 
 import { useAppSelector, useAppDispatch } from '../../../store'
-import { fetchPlaceByMatrix, fetchPlaceByAddress, addGoogleApiCost } from '../../../store/google'
+import {
+  fetchPlaceByMatrix,
+  fetchPlaceByAddress,
+  addGoogleApiCost,
+  setMapBound,
+} from '../../../store/google'
 import { setOrigin, setOriginGeo, setDestination, setDestinationGeo } from '../../../store/address'
 
 interface GeoMapProps {
@@ -14,6 +19,7 @@ interface GeoMapProps {
 
 interface MapInstance {
   setCenter: (_: { lat: number; lng: number }) => void
+  getBounds: () => void
   getCenter: () => { lat: () => number; lng: () => number }
 }
 
@@ -146,6 +152,8 @@ export default function GeoMap(props: GeoMapProps) {
       initMap()
     } else if (props.status && isLoad) {
       handleInputSetCenter()
+    } else {
+      if (map) dispatch(setMapBound(map.getBounds()))
     }
   }, [props.status])
 

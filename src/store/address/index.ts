@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { fetchPlaceByAddress } from '../google'
+import type { GoogleMapState } from '../google'
 import type { PostTaxiOrder } from '../api/address'
 
 export interface AddressState {
@@ -77,7 +78,7 @@ export const setGpsTrace = createAsyncThunk('address/setGpsTrace', async (_, { d
 export const createOrder = createAsyncThunk<
   PostTaxiOrder,
   { phone: string; name: string },
-  { state: { address: AddressState; google: { googleGeocoderService: any } } }
+  { state: { address: AddressState; google: GoogleMapState } }
 >('address/createOrder', async (option, { getState, dispatch }) => {
   console.log('process Middleware')
   const {

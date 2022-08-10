@@ -15,6 +15,8 @@ export default function GeoResult(props: GeoResultProps) {
   const dispatch = useAppDispatch()
   const results = useAppSelector((state) => state.google.googlePredictResult)
   const focusInput = useAppSelector((state) => state.address.focusInput)
+
+  // * default display data
   const { data: favoriteData } = useGetFavoriteAddressQuery(3)
   const { data: historyData } = useGetHistoryAddressQuery(2)
 
@@ -44,6 +46,19 @@ export default function GeoResult(props: GeoResultProps) {
     props.return()
   }
 
+  const handleClickSelectFromMap = () => {
+    if (results[0]) {
+      if (focusInput === 'origin') {
+        dispatch(setOrigin({ address: results[0].full, fullAddress: results[0].full }))
+        dispatch(setOriginGeo({ lat: 0, lon: 0 }))
+      } else if (focusInput === 'destination') {
+        dispatch(setDestination({ address: results[0].full, fullAddress: results[0].full }))
+        dispatch(setDestinationGeo({ lat: 0, lon: 0 }))
+      }
+    }
+    props.action()
+  }
+
   return (
     <div className={`${classes.container} ${props.status ? '' : classes.hide}`}>
       <ul>
@@ -65,7 +80,7 @@ export default function GeoResult(props: GeoResultProps) {
           </li>
         ))}
         {process.env.REACT_APP_ENABLE_MAP === 'true' && (
-          <li className={classes.action} onClick={props.action}>
+          <li className={classes.action} onClick={handleClickSelectFromMap}>
             Choose From Map
           </li>
         )}

@@ -18,11 +18,12 @@ interface GoogleMapGeoPlaceModel {
   place_id: string
 }
 
-interface GoogleMapState {
+export interface GoogleMapState {
   googleGeocoderService: any
   googleAutocompleteService: any
   googlePredictResult: PredictResultModel
   cost: number
+  bound: any // * google class
 }
 
 const initialState: GoogleMapState = {
@@ -30,6 +31,7 @@ const initialState: GoogleMapState = {
   googleAutocompleteService: null,
   googlePredictResult: [],
   cost: 0,
+  bound: undefined,
 }
 
 type GeoResultModel = ReturnType<typeof geoResultFormat>
@@ -54,7 +56,7 @@ const predictResultFormat = (results: Array<GoogleMapPredictPlaceModel>) =>
 export const fetchPlaceByAddress = createAsyncThunk<
   GeoResultModel,
   string,
-  { state: { google: { googleGeocoderService: any } } }
+  { state: { google: GoogleMapState } }
 >('google/fetchPlaceByAddress', async (address, { dispatch, getState }) => {
   const { googleGeocoderService: service } = getState().google
   const option = {
@@ -75,7 +77,7 @@ export const fetchPlaceByAddress = createAsyncThunk<
 export const fetchPlaceByMatrix = createAsyncThunk<
   GeoResultModel,
   { lat: number; lon: number },
-  { state: { google: { googleGeocoderService: any } } }
+  { state: { google: GoogleMapState } }
 >('google/fetchPlaceByMatrix', async (matrix, { dispatch, getState }) => {
   const { googleGeocoderService: service } = getState().google
   const option = {
@@ -97,11 +99,12 @@ export const fetchPlaceByMatrix = createAsyncThunk<
 export const fetchPredictResultByWord = createAsyncThunk<
   PredictResultModel,
   string,
-  { state: { google: { googleAutocompleteService: any } } }
+  { state: { google: GoogleMapState } }
 >('google/fetchPredictResultByWord', async (word: string, { dispatch, getState }) => {
-  const { googleAutocompleteService: service } = getState().google
+  const { googleAutocompleteService: service, bound } = getState().google
   // * TODO add option.bounds ( Map 4 corner )
   const option = {
+    bounds: bound,
     componentRestrictions: { country: 'tw' },
     input: word,
     type: 'establishment',
@@ -127,6 +130,9 @@ export const googleSlice = createSlice({
     setGooglePredictResult: (state, action) => {
       state.googlePredictResult = action.payload
     },
+    setMapBound: (state, action) => {
+      state.bound = action.payload
+    },
     addGoogleApiCost: (state, action) => {
       state.cost = Math.round((action.payload + state.cost) * 100000) / 100000
     },
@@ -142,6 +148,7 @@ export const {
   setGoogleAutocompleteService,
   setGoogleGeocoderService,
   setGooglePredictResult,
+  setMapBound,
   addGoogleApiCost,
 } = googleSlice.actions
 
