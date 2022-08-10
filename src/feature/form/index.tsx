@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import type { PropsWithChildren } from 'react'
 import { useScript } from '../../hook/useScript'
 
 import { useAppDispatch } from '../../store'
@@ -74,8 +75,6 @@ export default function Form() {
     </div>
   )
 }
-
-import { PropsWithChildren } from 'react'
 
 interface IsShowCompomentProps {
   time: number

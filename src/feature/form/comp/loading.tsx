@@ -6,7 +6,7 @@ interface LoadingIconProps {
   size: number
 }
 
-export default function LoadingIcon(props: LoadingIconProps) {
+export default function Loading(props: LoadingIconProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const draw = (ctx: CanvasRenderingContext2D) => {

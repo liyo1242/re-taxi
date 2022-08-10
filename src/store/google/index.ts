@@ -67,7 +67,7 @@ export const fetchPlaceByAddress = createAsyncThunk<
     region: 'tw',
   }
   const response = await new Promise<Array<GoogleMapGeoPlaceModel>>((resolve) => {
-    console.log('Because Geo API, cost money $0.005')
+    console.log('Because FetchPlaceByAddress Geo API, cost money $0.005')
     dispatch(addGoogleApiCost(0.05))
     service.geocode(option, (data, status) => {
       if (status === 'OK' && !!data[0]) resolve(data)
@@ -88,7 +88,7 @@ export const fetchPlaceByMatrix = createAsyncThunk<
     region: 'tw',
   }
   const response = await new Promise<Array<GoogleMapGeoPlaceModel>>((resolve) => {
-    console.log('Because Geo API, cost money $0.005')
+    console.log('Because FetchPlaceByMatrix Geo API, cost money $0.005')
     dispatch(addGoogleApiCost(0.05))
     service.geocode(option, (data, status) => {
       if (status === 'OK' && !!data[0]) resolve(data)

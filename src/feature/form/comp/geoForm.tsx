@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom'
 interface GeoFromProps {
   status: boolean
 }
-
-export default function GeoFrom(props: GeoFromProps) {
+// TODO fix Complexity from 19 to the 15
+export default function GeoForm(props: GeoFromProps) {
   const [phone, setPhone] = useState('')
   const [name, setName] = useState('')
   const [checkRequire, setCheckRequire] = useState(false)

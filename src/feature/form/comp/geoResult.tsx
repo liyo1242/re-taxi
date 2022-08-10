@@ -11,6 +11,7 @@ interface GeoResultProps {
 
 type GetArrayElement<T extends Array<any>> = T[number]
 
+// TODO fix Complexity from 16 to the 15
 export default function GeoResult(props: GeoResultProps) {
   const dispatch = useAppDispatch()
   const results = useAppSelector((state) => state.google.googlePredictResult)

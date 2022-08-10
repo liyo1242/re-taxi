@@ -25,7 +25,7 @@ function rotateDegCalculate() {
   }
 }
 
-export default function FlagIcon(props: FlagIconProps) {
+export default function Flag(props: FlagIconProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const draw =
