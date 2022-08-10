@@ -76,6 +76,7 @@ Other areas that could be optimized are the user experience of selecting address
     - **Click on the address element**, normal operation
     - **Press the map select button**, but the input text `taipei macdona` is need to be handle, In this project, it will use the first prediction as input and move the map center to the location
       ![notice-6.png](.asset/notice-6.png)
+4.  In handling user input predictions, we want the predicted value to be as close as possible to the value in the user's mind, so that we can avoid costly redundant operations by the user, and therefore need to pay more attention to the `bound` value
 
 ## Usage
 
