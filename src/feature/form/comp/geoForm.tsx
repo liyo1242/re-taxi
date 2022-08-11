@@ -65,12 +65,14 @@ export default function GeoForm(props: GeoFromProps) {
           />
         </li>
       </ul>
-      <button onClick={handleSubmit}>
-        <span>Submit</span>
-        <em>
-          <LoadingIcon size={20} active={submitLoading} />
-        </em>
-      </button>
+      {props.status && (
+        <button onClick={handleSubmit}>
+          <span>Submit</span>
+          <em>
+            <LoadingIcon size={20} active={submitLoading} />
+          </em>
+        </button>
+      )}
     </div>
   )
 }

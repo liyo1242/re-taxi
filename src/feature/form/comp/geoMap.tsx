@@ -15,6 +15,7 @@ import { setOrigin, setOriginGeo, setDestination, setDestinationGeo } from '../.
 
 interface GeoMapProps {
   status: boolean
+  action: () => void
 }
 
 interface MapInstance {
@@ -164,6 +165,7 @@ export default function GeoMap(props: GeoMapProps) {
       <em className={classes.icon}>
         <LoadingIcon size={20} active={!!dragTaskTimer} />
       </em>
+      {props.status && <button onClick={props.action}>Ok</button>}
     </div>
   )
 }

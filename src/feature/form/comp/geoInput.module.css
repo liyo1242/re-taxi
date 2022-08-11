@@ -19,3 +19,8 @@
 .input:focus {
   outline: none;
 }
+
+.input::placeholder {
+  color: #999999aa;
+}
+

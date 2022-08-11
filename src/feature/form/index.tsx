@@ -34,6 +34,11 @@ export default function Form() {
     setIsFormShow(false)
   }
 
+  const handleConfirmMapSelect = () => {
+    setIsFormShow(true)
+    setIsMapShow(false)
+  }
+
   const handleReturn = () => {
     if (isPredictShow) {
       setIsPredictShow(false)
@@ -68,9 +73,9 @@ export default function Form() {
         </IsShowCompoment>
         <h2>Call Taxi</h2>
       </div>
-      <GepInput action={handleInputFocus} />
+      <GepInput watchStatus={isPredictShow} action={handleInputFocus} />
       <GeoResult status={isPredictShow} action={handleChoosePlaceFromMap} return={handleReturn} />
-      <GeoMap status={isMapShow} />
+      <GeoMap status={isMapShow} action={handleConfirmMapSelect} />
       <GeoForm status={isFormShow} />
     </div>
   )

@@ -161,8 +161,15 @@ export const addressSlice = createSlice({
     setDestinationGeo: (state, action: PayloadAction<SetGeoAction>) => {
       state.destinationPlaceLat = action.payload.lat
       state.destinationPlaceLon = action.payload.lon
+      // * this logic should put on middleware
       if (action.payload.lat && action.payload.lon) state.isDestinationPlaceGeoValid = true
       else state.isDestinationPlaceGeoValid = false
+    },
+    clearDestination: (state) => {
+      state.destinationPlace = ''
+      state.destinationPlaceFullText = ''
+      state.destinationPlaceLat = 0
+      state.destinationPlaceLon = 0
     },
     setFocusStatus: (state, action: PayloadAction<'origin' | 'destination'>) => {
       state.focusInput = action.payload
@@ -190,6 +197,7 @@ export const {
   setGpsPlace,
   setOption,
   setOrderId,
+  clearDestination,
 } = addressSlice.actions
 
 export default addressSlice.reducer

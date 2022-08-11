@@ -7,11 +7,12 @@ import {
   setGooglePredictResult,
   setMapBound,
 } from '../../../store/google'
-import { setFocusStatus, setOrigin, setOriginGeo } from '../../../store/address'
+import { setFocusStatus, setOrigin, setOriginGeo, clearDestination } from '../../../store/address'
 import { useEffect, useState } from 'react'
 import { debounce } from '../../../utils'
 
 interface GeoInputProps {
+  watchStatus: boolean
   action: () => void
 }
 
@@ -20,6 +21,7 @@ export default function GeoInput(props: GeoInputProps) {
   const [destinationInputValue, setDestinationInputValue] = useState('')
   const gpsPlaceLat = useAppSelector((state) => state.address.gpsPlaceLat)
   const gpsPlaceLon = useAppSelector((state) => state.address.gpsPlaceLon)
+  const focusInput = useAppSelector((state) => state.address.focusInput)
   const originPlaceFullText = useAppSelector((state) => state.address.originPlaceFullText)
   const destinationPlaceFullText = useAppSelector((state) => state.address.destinationPlaceFullText)
   const dispatch = useAppDispatch()
@@ -37,6 +39,8 @@ export default function GeoInput(props: GeoInputProps) {
 
   const handleDestinationInputChange = (event) => {
     setDestinationInputValue(event.target.value)
+    // * In Taxi Case, the destination info is option
+    if (event.target.value === '') dispatch(clearDestination())
     _generatePredictResult(event.target.value)
   }
 
@@ -91,18 +95,32 @@ export default function GeoInput(props: GeoInputProps) {
     setDestinationInputValue(destinationPlaceFullText)
   }, [destinationPlaceFullText])
 
+  // * when the result disappear, check input isValid
+  useEffect(() => {
+    if (!props.watchStatus) {
+      if (focusInput === 'origin') {
+        if (originInputValue !== originPlaceFullText) setOriginInputValue(originPlaceFullText)
+      } else if (focusInput === 'destination') {
+        if (destinationInputValue !== destinationPlaceFullText)
+          setDestinationInputValue(destinationPlaceFullText)
+      }
+    }
+  }, [props.watchStatus])
+
   return (
     <>
       <div className={classes.container}>
         <input
           className={classes.input}
           onFocus={handleOriginFocus}
+          placeholder="The starting point of a happy journey"
           value={originInputValue}
           onChange={handleOriginInputChange}
         />
         <input
           className={classes.input}
           onFocus={handleDestinationFocus}
+          placeholder="Where to have fun today ?"
           value={destinationInputValue}
           onChange={handleDestinationInputChange}
         />
