@@ -53,6 +53,7 @@ export default function Form() {
   useEffect(() => {
     if (loaded) {
       dispatch(setGpsTrace())
+    } else {
       window.initMap = () => {
         const autocompleteService = new window.google.maps.places.AutocompleteService()
         const geocoderService = new window.google.maps.Geocoder()
