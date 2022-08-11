@@ -80,7 +80,6 @@ export const createOrder = createAsyncThunk<
   { phone: string; name: string },
   { state: { address: AddressState; google: GoogleMapState } }
 >('address/createOrder', async (option, { getState, dispatch }) => {
-  console.log('process Middleware')
   const {
     originPlace,
     originPlaceLat,
@@ -95,7 +94,6 @@ export const createOrder = createAsyncThunk<
     destinationGeo = {}
   dispatch(setOption(option))
   if (originPlace && !isOriginPlaceGeoValid) {
-    console.log('process origin place')
     // * dispatch api trans text to geo
     const response = await dispatch(fetchPlaceByAddress(originPlace))
     if (fetchPlaceByAddress.fulfilled.match(response)) {
@@ -109,7 +107,6 @@ export const createOrder = createAsyncThunk<
   }
 
   if (destinationPlace && !isDestinationPlaceGeoValid) {
-    console.log('process destination place')
     // * dispatch api trans text to geo
     const response = await dispatch(fetchPlaceByAddress(destinationPlace))
     if (fetchPlaceByAddress.fulfilled.match(response)) {

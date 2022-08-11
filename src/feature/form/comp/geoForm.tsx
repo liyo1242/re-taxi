@@ -6,6 +6,8 @@ import LoadingIcon from './loading'
 import { usePostTaxiOrderMutation } from '../../../store/api/address'
 import { useNavigate } from 'react-router-dom'
 
+import { useNotify } from '../../../hook/useNotify'
+
 interface GeoFromProps {
   status: boolean
 }
@@ -18,6 +20,7 @@ export default function GeoForm(props: GeoFromProps) {
   const dispatch = useAppDispatch()
   const [postTaxiOrder] = usePostTaxiOrderMutation()
   const navigate = useNavigate()
+  const { show: showErrorNotify, NotificationModel } = useNotify('alert')
 
   const handleSubmit = async () => {
     setCheckRequire(true)
@@ -31,6 +34,8 @@ export default function GeoForm(props: GeoFromProps) {
         if ('data' in result) {
           dispatch(setOrderId(result.data.id))
           navigate('/status', { replace: true })
+        } else {
+          showErrorNotify()
         }
       }
     }
@@ -46,33 +51,36 @@ export default function GeoForm(props: GeoFromProps) {
   }
 
   return (
-    <div className={`${classes.container} ${props.status ? '' : classes.hide}`}>
-      <ul>
-        <li>
-          <h3>Phone</h3>
-          <input
-            className={checkRequire && !checkPhoneNumber(phone) ? classes.inValid : ''}
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-          />
-        </li>
-        <li>
-          <h3>Name</h3>
-          <input
-            className={checkRequire && !name ? classes.inValid : ''}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </li>
-      </ul>
-      {props.status && (
-        <button onClick={handleSubmit}>
-          <span>Submit</span>
-          <em>
-            <LoadingIcon size={20} active={submitLoading} />
-          </em>
-        </button>
-      )}
-    </div>
+    <>
+      <div className={`${classes.container} ${props.status ? '' : classes.hide}`}>
+        <ul>
+          <li>
+            <h3>Phone</h3>
+            <input
+              className={checkRequire && !checkPhoneNumber(phone) ? classes.inValid : ''}
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+            />
+          </li>
+          <li>
+            <h3>Name</h3>
+            <input
+              className={checkRequire && !name ? classes.inValid : ''}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </li>
+        </ul>
+        {props.status && (
+          <button onClick={handleSubmit}>
+            <span>Submit</span>
+            <em>
+              <LoadingIcon size={20} active={submitLoading} />
+            </em>
+          </button>
+        )}
+      </div>
+      <NotificationModel>Submit Failed</NotificationModel>
+    </>
   )
 }
