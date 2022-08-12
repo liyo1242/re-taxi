@@ -8,7 +8,7 @@
   <h3 align="center">Re-Taxi</h3>
 
   <p align="center">
-    This is a refactoring project from my last work project
+    <a href="https://taxi-demo-1.herokuapp.com/">heroku demo</a>
     <br />
     <br />
   </p>
@@ -23,15 +23,18 @@
 - [My Strategy](#my-strategy)
   - [Another Notice](#another-notice)
 - [Usage](#usage)
+- [Deploy](#deploy)
 - [Project structure](#project-structure)
 
 </details>
 
 ## About This Project
 
-This project includes 1 main part, optimize API efficiency when relying on **google map API** to select addresses
+Normally, A ride-hailing system will generally cover the following functions, the cost of location selection often conflicts with user experience considerations, so i make an experimental project to optimize efficiency when relying on **google map API**
 
-The main reason for refactoring this project is to bring to a close what I did not do before.
+This project only focus on **No.2** step
+
+![notice-7.png](.asset/notice-7.png)
 
 ### Prerequisites
 
@@ -105,6 +108,18 @@ yarn run start
 ```bash
 yarn run storybook
 ```
+
+- `.env` file has some function trigger to try a different user experience
+
+## Deploy
+
+To make my work easier and to ensure the quality of the code, I have designed some processes for this project
+
+- Because I can't find a space where I can deploy Sonarqube without spending money, so I set up a local docker and provided the code scanning service to myself
+
+- Because heroku instance PORT is random, so I did some work on the dockerFile and nginx config files, those are not proper usage
+
+![notice-10.png](.asset/notice-10.png)
 
 ## Project structure
 
