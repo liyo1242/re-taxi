@@ -6,19 +6,33 @@ on:
       - 'releases/**'
 
 jobs:
-  build:
+  deploy-heroku-env:
     runs-on: ubuntu-latest
+    name: Deploy to Heroku
+    env:
+      HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build, Push and Release a Docker container to Heroku.
-        uses: gonuit/heroku-docker-deploy@v1.3.3
-        with:
-          email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          dockerfile_directory: ./
-          dockerfile_name: Dockerfile
-          docker_options: "--no-cache"
-          process_type: web
+      - name: Build Image
+        run: |
+          echo $HEROKU_API_KEY | docker login -u ${{ secrets.HEROKU_EMAIL }} registry.heroku.com --password-stdin
+          docker build --build-arg GOOGLE_KEY=${{ secrets.GOOGLE_KEY }} --tag registry.heroku.com/${HEROKU_APP_NAME}/web .
+      - name: Push Image
+        run: |
+          docker push registry.heroku.com/${HEROKU_APP_NAME}/web
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Heroku Auth
+        run: |
+          heroku auth:token
+          heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Heroku Deploy
+        run: |
+          heroku container:release web --app ${HEROKU_APP_NAME}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
