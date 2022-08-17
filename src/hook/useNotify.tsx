@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { memo, useEffect, useRef, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import ReactDOM from 'react-dom'

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useRef, useEffect } from 'react'
 import classes from './flag.module.css'
 
